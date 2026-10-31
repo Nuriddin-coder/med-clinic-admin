@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://med-clinic-back.onrender.com';
 
-if (!API_BASE_URL) {
-  console.warn('Diqqat: VITE_API_BASE_URL muhit o\'zgaruvchisi topilmadi. .env faylini tekshiring.');
+if (!import.meta.env.VITE_API_BASE_URL) {
+  console.warn(
+    `Diqqat: VITE_API_BASE_URL topilmadi, standart URL ishlatilmoqda: ${API_BASE_URL}`
+  );
 }
 
 export const apiClient = axios.create({
@@ -46,4 +49,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(message));
   }
 );
-

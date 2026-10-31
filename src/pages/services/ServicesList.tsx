@@ -45,7 +45,7 @@ export const ServicesList: React.FC = () => {
   const [minPrice, setMinPrice] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<string>('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const debouncedSearch = useDebounce(search, 400);
   const debouncedMinPrice = useDebounce(minPrice, 400);

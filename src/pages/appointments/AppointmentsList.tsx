@@ -65,7 +65,7 @@ export const AppointmentsList: React.FC = () => {
   const [date, setDate] = useState<string>('');
   const [sort, setSort] = useState<AppointmentSortOption>('date-desc');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const debouncedSearch = useDebounce(search, 400);
 

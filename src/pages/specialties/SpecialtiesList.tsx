@@ -52,7 +52,7 @@ export const SpecialtiesList: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SpecialtySortOption>('name-asc');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const debouncedSearch = useDebounce(search, 400);
 

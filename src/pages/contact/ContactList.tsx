@@ -30,7 +30,7 @@ export const ContactList: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<ContactSortOption>('createdAt-desc');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const debouncedSearch = useDebounce(search, 400);
 

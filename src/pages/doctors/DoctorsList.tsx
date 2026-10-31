@@ -51,7 +51,7 @@ export const DoctorsList: React.FC = () => {
   const [gender, setGender] = useState<string>('ALL');
   const [sort, setSort] = useState<DoctorSortOption>('rating-desc');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
 
   const debouncedSearch = useDebounce(search, 400);
 

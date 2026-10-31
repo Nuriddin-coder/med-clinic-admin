@@ -1,12 +1,11 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface PaginationProps {
   page: number;
   totalPages: number;
   total: number;
-  limit: number;
+  limit?: number;
   onPageChange: (page: number) => void;
   onLimitChange?: (limit: number) => void;
   pageSizeOptions?: number[];
@@ -17,16 +16,10 @@ export const Pagination: React.FC<PaginationProps> = ({
   page,
   totalPages,
   total,
-  limit,
   onPageChange,
-  onLimitChange,
-  pageSizeOptions = [10, 20, 50],
-  className,
+  className = '',
 }) => {
-  if (total === 0) return null;
-
-  const start = Math.min((page - 1) * limit + 1, total);
-  const end = Math.min(page * limit, total);
+  if (total === 0 || totalPages <= 0) return null;
 
   // Generate page numbers to show
   const getPageNumbers = () => {
@@ -35,9 +28,9 @@ export const Pagination: React.FC<PaginationProps> = ({
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       if (page <= 3) {
-        pages.push(1, 2, 3, 4, '...', totalPages);
+        pages.push(1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages);
       } else if (page >= totalPages - 2) {
-        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        pages.push(1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages);
       } else {
         pages.push(1, '...', page - 1, page, page + 1, '...', totalPages);
       }
@@ -46,107 +39,61 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-white border-t border-slate-100 text-xs text-slate-600">
-      {/* Information & Page size selector */}
-      <div className="flex items-center gap-3">
-        <span>
-          Ko'rsatilmoqda: <b className="text-slate-900">{start}–{end}</b> / Jami:{' '}
-          <b className="text-slate-900">{total}</b> ta yozuv
-        </span>
-
-        {onLimitChange && (
-          <div className="flex items-center gap-1.5 ml-2 border-l border-slate-200 pl-3">
-            <span className="text-slate-400">Har sahifada:</span>
-            <select
-              value={limit}
-              onChange={(e) => {
-                onLimitChange(Number(e.target.value));
-                onPageChange(1);
-              }}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-800 font-medium focus:outline-none focus:border-emerald-500 cursor-pointer text-xs"
-            >
-              {pageSizeOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt} tadan
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-      </div>
-
+    <div className={`flex items-center justify-center p-4 bg-white border-t border-slate-100 ${className}`}>
       {/* Pagination Controls */}
-      <div className="flex items-center gap-1">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(1)}
-          disabled={page <= 1}
-          className="h-8 w-8 p-0"
-          title="Birinchi sahifa"
-        >
-          <ChevronsLeft className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Prev button - yozuvsiz, faqat chapga icon */}
+        <button
+          type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="h-8 px-2.5 gap-1"
+          aria-label="Oldingi sahifa"
           title="Oldingi sahifa"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-slate-200 transition cursor-pointer shadow-xs"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Oldingi</span>
-        </Button>
+          <ChevronLeft className="w-4 h-4" />
+        </button>
 
         {/* Page numbers */}
-        <div className="flex items-center gap-1 mx-1">
+        <div className="flex items-center gap-1.5">
           {getPageNumbers().map((p, idx) =>
             typeof p === 'number' ? (
               <button
                 key={idx}
+                type="button"
                 onClick={() => onPageChange(p)}
-                className={`h-8 min-w-[2rem] px-2 rounded-lg font-semibold text-xs transition cursor-pointer ${
+                aria-current={page === p ? 'page' : undefined}
+                className={`flex items-center justify-center min-w-[2.25rem] h-9 px-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
                   page === p
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
                 }`}
               >
                 {p}
               </button>
             ) : (
-              <span key={idx} className="px-1 text-slate-400 select-none">
-                {p}
+              <span
+                key={idx}
+                className="flex items-center justify-center w-7 h-9 text-slate-400 font-semibold select-none text-xs tracking-wider"
+              >
+                ...
               </span>
             )
           )}
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
+        {/* Next button - yozuvsiz, faqat o'ngga icon */}
+        <button
+          type="button"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="h-8 px-2.5 gap-1"
+          aria-label="Keyingi sahifa"
           title="Keyingi sahifa"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-slate-200 transition cursor-pointer shadow-xs"
         >
-          <span className="hidden sm:inline">Keyingi</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(totalPages)}
-          disabled={page >= totalPages}
-          className="h-8 w-8 p-0"
-          title="Oxirgi sahifa"
-        >
-          <ChevronsRight className="w-4 h-4" />
-        </Button>
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
 };
-
