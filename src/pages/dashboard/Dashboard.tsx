@@ -25,7 +25,7 @@ import { getAppointments } from '@/api/appointments.api';
 import { getServices } from '@/api/services.api';
 import { getContacts } from '@/api/contact.api';
 import { getSpecialties } from '@/api/specialties.api';
-import { formatCurrency, formatDate } from '@/utils/format';
+import { formatCurrency, formatDate, formatUzbekPhone } from '@/utils/format';
 
 const statusMap: Record<string, { label: string; variant: BadgeVariant }> = {
   pending: { label: 'Kutilmoqda', variant: 'warning' },
@@ -236,7 +236,7 @@ export const Dashboard: React.FC = () => {
                             {app.patientName}
                           </td>
                           <td className="px-5 py-4 text-xs text-slate-600 font-mono">
-                            {app.patientPhone}
+                            {formatUzbekPhone(app.patientPhone)}
                           </td>
                           <td className="px-5 py-4">
                             <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-slate-100 px-2 py-1 rounded-md font-medium">
@@ -298,7 +298,7 @@ export const Dashboard: React.FC = () => {
               {clinic?.about}
             </p>
             <div className="mt-4 pt-3 border-t border-emerald-500/40 flex items-center justify-between text-xs">
-              <span className="font-mono">{clinic?.phones?.[0] || '+998 71 200 08 08'}</span>
+              <span className="font-mono">{formatUzbekPhone(clinic?.phones?.[0]) || '+998 71 200 08 08'}</span>
               <span className="bg-white/20 px-2 py-0.5 rounded text-[11px]">{clinic?.years} yillik tajriba</span>
             </div>
           </div>

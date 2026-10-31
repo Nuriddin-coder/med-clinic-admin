@@ -16,13 +16,14 @@ import { MedicalService, ServiceSortOption } from '@/types/service.types';
 import { Card } from '@/components/common/Card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { NumberInput } from '@/components/common/NumberInput';
 import { ShadcnSelect } from '@/components/ui/select';
 import { EmptyState } from '@/components/common/EmptyState';
 import { Pagination } from '@/components/common/Pagination';
 import { ServicesTableSkeleton } from '@/components/common/Skeletons';
 import { ServiceModal } from './ServiceModal';
 import { ConfirmDeleteModal } from '@/components/common/ConfirmDeleteModal';
-import { formatCurrency } from '@/utils/format';
+import { formatCurrency, parseNumberFromFormatted } from '@/utils/format';
 import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -78,8 +79,8 @@ export const ServicesList: React.FC = () => {
       getServices({
         search: debouncedSearch.trim() || undefined,
         specialtyId: selectedSpecialty !== 'ALL' ? selectedSpecialty : undefined,
-        minPrice: debouncedMinPrice ? Number(debouncedMinPrice) : undefined,
-        maxPrice: debouncedMaxPrice ? Number(debouncedMaxPrice) : undefined,
+        minPrice: debouncedMinPrice ? parseNumberFromFormatted(debouncedMinPrice) : undefined,
+        maxPrice: debouncedMaxPrice ? parseNumberFromFormatted(debouncedMaxPrice) : undefined,
         sort,
         page,
         limit,
@@ -169,8 +170,7 @@ export const ServicesList: React.FC = () => {
       <div className="space-y-3 bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
           {/* Search */}
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <div className="flex-1 min-w-[240px]">
             <Input
               type="text"
               placeholder="Xizmat nomi yoki tavsifi bo'yicha qidiruv..."
@@ -179,7 +179,7 @@ export const ServicesList: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="pl-10"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
             />
           </div>
 
@@ -214,28 +214,26 @@ export const ServicesList: React.FC = () => {
         <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100 text-xs">
           <span className="font-medium text-slate-500">Narx oralig'i (so'm):</span>
           <div className="w-32">
-            <Input
-              type="number"
+            <NumberInput
               placeholder="Min narx"
               value={minPrice}
-              onChange={(e) => {
-                setMinPrice(e.target.value);
+              onChange={(_num, formatted) => {
+                setMinPrice(formatted);
                 setPage(1);
               }}
-              className="h-8 text-xs"
+              className="h-8 text-xs font-normal"
             />
           </div>
           <span className="text-slate-400">—</span>
           <div className="w-32">
-            <Input
-              type="number"
+            <NumberInput
               placeholder="Max narx"
               value={maxPrice}
-              onChange={(e) => {
-                setMaxPrice(e.target.value);
+              onChange={(_num, formatted) => {
+                setMaxPrice(formatted);
                 setPage(1);
               }}
-              className="h-8 text-xs"
+              className="h-8 text-xs font-normal"
             />
           </div>
 

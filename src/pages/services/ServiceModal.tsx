@@ -8,6 +8,7 @@ import { MedicalService, CreateServiceDto } from '@/types/service.types';
 import { Specialty } from '@/types/specialty.types';
 import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
+import { NumberInput } from '@/components/common/NumberInput';
 import { Textarea } from '@/components/common/Textarea';
 import { Select } from '@/components/common/Select';
 import { Button } from '@/components/common/Button';
@@ -143,20 +144,34 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label="Narxi (so'mda)"
-            type="number"
-            placeholder="150000"
-            error={errors.price?.message}
-            {...register('price')}
+          <Controller
+            control={control}
+            name="price"
+            render={({ field }) => (
+              <NumberInput
+                label="Narxi"
+                suffix="so'm"
+                placeholder="Masalan: 150 000"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+                error={errors.price?.message}
+              />
+            )}
           />
 
-          <Input
-            label="Davomiyligi (daqiqa)"
-            type="number"
-            placeholder="30"
-            error={errors.durationMinutes?.message}
-            {...register('durationMinutes')}
+          <Controller
+            control={control}
+            name="durationMinutes"
+            render={({ field }) => (
+              <NumberInput
+                label="Davomiyligi"
+                suffix="daqiqa"
+                placeholder="30"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+                error={errors.durationMinutes?.message}
+              />
+            )}
           />
         </div>
 

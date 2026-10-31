@@ -43,7 +43,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 text-slate-400 flex items-center pointer-events-none">
+            <div className="absolute left-3 z-10 text-slate-400 flex items-center pointer-events-none">
               {leftIcon}
             </div>
           )}

@@ -8,6 +8,7 @@ import { Doctor, CreateDoctorDto } from '@/types/doctor.types';
 import { Specialty } from '@/types/specialty.types';
 import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
+import { NumberInput } from '@/components/common/NumberInput';
 import { Select } from '@/components/common/Select';
 import { Textarea } from '@/components/common/Textarea';
 import { Button } from '@/components/common/Button';
@@ -201,20 +202,34 @@ export const DoctorModal: React.FC<DoctorModalProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label="Konsultatsiya narxi (so'mda)"
-            type="number"
-            placeholder="180000"
-            error={errors.consultationPrice?.message}
-            {...register('consultationPrice')}
+          <Controller
+            control={control}
+            name="consultationPrice"
+            render={({ field }) => (
+              <NumberInput
+                label="Konsultatsiya narxi"
+                suffix="so'm"
+                placeholder="Masalan: 200 000"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+                error={errors.consultationPrice?.message}
+              />
+            )}
           />
 
-          <Input
-            label="Tajriba (yil)"
-            type="number"
-            placeholder="10"
-            error={errors.experienceYears?.message}
-            {...register('experienceYears')}
+          <Controller
+            control={control}
+            name="experienceYears"
+            render={({ field }) => (
+              <NumberInput
+                label="Ish tajribasi"
+                suffix="yil"
+                placeholder="10"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+                error={errors.experienceYears?.message}
+              />
+            )}
           />
         </div>
 

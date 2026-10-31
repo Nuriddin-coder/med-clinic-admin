@@ -12,7 +12,7 @@ import { Modal } from '@/components/common/Modal';
 import { Pagination } from '@/components/common/Pagination';
 import { ContactTableSkeleton } from '@/components/common/Skeletons';
 import { ConfirmDeleteModal } from '@/components/common/ConfirmDeleteModal';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime, formatUzbekPhone } from '@/utils/format';
 import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -89,8 +89,7 @@ export const ContactList: React.FC = () => {
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="flex-1 max-w-md">
           <Input
             type="text"
             placeholder="Ism, telefon, email yoki xabar matni bo'yicha qidiruv..."
@@ -99,7 +98,7 @@ export const ContactList: React.FC = () => {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="pl-10"
+            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
           />
         </div>
 
@@ -154,7 +153,7 @@ export const ContactList: React.FC = () => {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5 text-xs text-slate-700 font-mono">
                         <Phone className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{msg.phone}</span>
+                        <span>{formatUzbekPhone(msg.phone)}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
                         <Mail className="w-3.5 h-3.5 text-slate-400" />
@@ -231,7 +230,7 @@ export const ContactList: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span>Telefon:</span>
-                <span className="font-mono text-slate-700">{selectedMessage.phone}</span>
+                <span className="font-mono text-slate-700">{formatUzbekPhone(selectedMessage.phone)}</span>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span>Elektron pochta:</span>
@@ -257,15 +256,6 @@ export const ContactList: React.FC = () => {
               >
                 <Trash2 className="w-4 h-4" />
                 <span>O'chirish</span>
-              </Button>
-
-              <Button
-                size="sm"
-                onClick={() => (window.location.href = `tel:${selectedMessage.phone}`)}
-                className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                <Phone className="w-4 h-4" />
-                <span>Qo'ng'iroq qilish</span>
               </Button>
             </div>
           </div>

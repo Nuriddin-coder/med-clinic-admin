@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,11 +7,13 @@ import { getClinicInfo, patchClinicInfo } from '@/api/clinic.api';
 import { UpdateClinicDto } from '@/types/clinic.types';
 import { Card, CardHeader, CardBody } from '@/components/common/Card';
 import { Input } from '@/components/common/Input';
+import { NumberInput } from '@/components/common/NumberInput';
 import { Textarea } from '@/components/common/Textarea';
 import { Button } from '@/components/common/Button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Save, Building2, Phone, Mail, Clock, Award, Users } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
+import { formatUzbekPhone, toCleanPhone } from '@/utils/format';
 
 const clinicSettingsSchema = z.object({
   name: z.string().min(2, { message: 'Klinika nomi kiritilishi shart' }),
@@ -40,6 +42,7 @@ export const Settings: React.FC = () => {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors, isDirty },
   } = useForm<ClinicSettingsFormData>({
@@ -53,7 +56,7 @@ export const Settings: React.FC = () => {
         tagline: clinic.tagline || '',
         about: clinic.about || '',
         address: clinic.address || '',
-        phones: clinic.phones?.join(', ') || '',
+        phones: clinic.phones?.map(formatUzbekPhone).join(', ') || '',
         email: clinic.email || '',
         workingHoursLabel: clinic.workingHoursLabel || '',
         years: clinic.years || 0,
@@ -81,7 +84,7 @@ export const Settings: React.FC = () => {
       tagline: data.tagline,
       about: data.about,
       address: data.address,
-      phones: data.phones.split(',').map((p) => p.trim()).filter(Boolean),
+      phones: data.phones.split(',').map((p) => toCleanPhone(p.trim())).filter(Boolean),
       email: data.email,
       workingHoursLabel: data.workingHoursLabel,
       years: Number(data.years),
@@ -202,25 +205,49 @@ export const Settings: React.FC = () => {
           />
           <CardBody className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Input
-                label="Faoliyat yillari"
-                type="number"
-                error={errors.years?.message}
-                {...register('years')}
+              <Controller
+                control={control}
+                name="years"
+                render={({ field }) => (
+                  <NumberInput
+                    label="Faoliyat yillari"
+                    suffix="yil"
+                    placeholder="10"
+                    value={field.value}
+                    onChange={(val) => field.onChange(val)}
+                    error={errors.years?.message}
+                  />
+                )}
               />
 
-              <Input
-                label="Davolangan bemorlar soni"
-                type="number"
-                error={errors.patientCount?.message}
-                {...register('patientCount')}
+              <Controller
+                control={control}
+                name="patientCount"
+                render={({ field }) => (
+                  <NumberInput
+                    label="Davolangan bemorlar soni"
+                    suffix="bemor"
+                    placeholder="15 000"
+                    value={field.value}
+                    onChange={(val) => field.onChange(val)}
+                    error={errors.patientCount?.message}
+                  />
+                )}
               />
 
-              <Input
-                label="Shifokorlar soni"
-                type="number"
-                error={errors.doctorCount?.message}
-                {...register('doctorCount')}
+              <Controller
+                control={control}
+                name="doctorCount"
+                render={({ field }) => (
+                  <NumberInput
+                    label="Shifokorlar soni"
+                    suffix="nafar"
+                    placeholder="25"
+                    value={field.value}
+                    onChange={(val) => field.onChange(val)}
+                    error={errors.doctorCount?.message}
+                  />
+                )}
               />
             </div>
           </CardBody>

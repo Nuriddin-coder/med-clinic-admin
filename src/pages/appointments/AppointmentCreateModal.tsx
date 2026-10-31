@@ -8,10 +8,12 @@ import { Doctor } from '@/types/doctor.types';
 import { MedicalService } from '@/types/service.types';
 import { Modal } from '@/components/common/Modal';
 import { Input } from '@/components/common/Input';
+import { PhoneInput } from '@/components/common/PhoneInput';
 import { Select } from '@/components/common/Select';
 import { Textarea } from '@/components/common/Textarea';
 import { Button } from '@/components/common/Button';
 import { useToast } from '@/context/ToastContext';
+import { toCleanPhone } from '@/utils/format';
 
 const appointmentSchema = z.object({
   doctorId: z.string().min(1, { message: 'Shifokorni tanlang' }),
@@ -19,7 +21,16 @@ const appointmentSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Sana formati: YYYY-MM-DD bo\'lishi kerak' }),
   time: z.string().regex(/^\d{2}:\d{2}$/, { message: 'Vaqt formati: HH:MM bo\'lishi kerak' }),
   patientName: z.string().min(3, { message: 'Bemor ismi kamida 3 ta harf bo\'lishi kerak' }),
-  patientPhone: z.string().regex(/^\+998[0-9]{9}$/, { message: 'Telefon formati: +998901234567 bo\'lishi kerak' }),
+  patientPhone: z
+    .string()
+    .min(1, { message: 'Telefon raqami kiritilishi shart' })
+    .refine(
+      (val) => {
+        const clean = val.replace(/\D/g, '');
+        return clean.length === 12 && clean.startsWith('998');
+      },
+      { message: "Telefon raqamini to'liq kiriting: +998 90 123 45 67" }
+    ),
   notes: z.string().optional(),
 });
 
@@ -57,13 +68,17 @@ export const AppointmentCreateModal: React.FC<AppointmentCreateModalProps> = ({
       date: tomorrowStr,
       time: '10:00',
       patientName: '',
-      patientPhone: '+998',
+      patientPhone: '',
       notes: '',
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: AppointmentFormData) => createAppointment(data),
+    mutationFn: (data: AppointmentFormData) =>
+      createAppointment({
+        ...data,
+        patientPhone: toCleanPhone(data.patientPhone),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
       success('Qabul muvaffaqiyatli band qilindi');
@@ -151,11 +166,18 @@ export const AppointmentCreateModal: React.FC<AppointmentCreateModalProps> = ({
             {...register('patientName')}
           />
 
-          <Input
-            label="Telefon raqami"
-            placeholder="+998901234567"
-            error={errors.patientPhone?.message}
-            {...register('patientPhone')}
+          <Controller
+            control={control}
+            name="patientPhone"
+            render={({ field }) => (
+              <PhoneInput
+                label="Telefon raqami"
+                placeholder="+998 90 123 45 67"
+                value={field.value}
+                onChange={(_clean, formatted) => field.onChange(formatted)}
+                error={errors.patientPhone?.message}
+              />
+            )}
           />
         </div>
 

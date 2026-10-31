@@ -32,7 +32,7 @@ import { Pagination } from '@/components/common/Pagination';
 import { AppointmentsTableSkeleton } from '@/components/common/Skeletons';
 import { AppointmentCreateModal } from './AppointmentCreateModal';
 import { ConfirmDeleteModal } from '@/components/common/ConfirmDeleteModal';
-import { formatDate } from '@/utils/format';
+import { formatDate, formatUzbekPhone } from '@/utils/format';
 import { useToast } from '@/context/ToastContext';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -251,8 +251,7 @@ export const AppointmentsList: React.FC = () => {
         {/* Search & Select Filters */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 pt-1">
           {/* Search */}
-          <div className="relative sm:col-span-2 lg:col-span-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <div className="sm:col-span-2 lg:col-span-1">
             <Input
               type="text"
               placeholder="Bemor, telefon, izoh..."
@@ -261,7 +260,7 @@ export const AppointmentsList: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="pl-10"
+              leftIcon={<Search className="w-4 h-4 text-slate-400" />}
             />
           </div>
 
@@ -371,7 +370,7 @@ export const AppointmentsList: React.FC = () => {
                     <td className="px-5 py-4">
                       <div className="font-semibold text-slate-900">{app.patientName}</div>
                       <div className="text-xs text-slate-500 font-mono mt-0.5">
-                        {app.patientPhone}
+                        {formatUzbekPhone(app.patientPhone)}
                       </div>
                     </td>
 

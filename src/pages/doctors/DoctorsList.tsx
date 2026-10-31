@@ -152,8 +152,7 @@ export const DoctorsList: React.FC = () => {
       {/* Filter and Search Bar */}
       <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-2xs">
         {/* Search */}
-        <div className="relative flex-1 min-w-[240px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="flex-1 min-w-[240px]">
           <Input
             type="text"
             placeholder="Shifokor ismi, unvoni, tillari bo'yicha qidiruv..."
@@ -162,7 +161,7 @@ export const DoctorsList: React.FC = () => {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="pl-10"
+            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
           />
         </div>
 
